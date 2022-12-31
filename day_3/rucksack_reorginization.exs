@@ -56,13 +56,48 @@ defmodule RuckSack do
     |> Stream.map(&List.to_string([&1]))
 
     # Index the map
-    |> Enum.map(&all_a_to_z[&1])
+    |> Stream.map(&all_a_to_z[&1])
 
     # Sum results
     |> Enum.sum
 
     IO.inspect(total_sum_priorities)
   end
+
+  def run_part_two do
+
+    all_a_to_z = get_mapping()
+
+    # Get cleaned input data
+    total_sum_priorities = run()
+
+    # Convert to char list
+    |> Stream.map(&String.to_charlist/1)
+
+    # Create mapset
+    |> Stream.map(&MapSet.new(&1))
+
+    # Chunk every 3rd row
+    |> Stream.chunk_every(3)
+
+    # Reduce each group by taking the intersection and flatten it
+    |> Stream.flat_map(fn group -> Enum.reduce(group, &MapSet.intersection/2) end)
+
+    # Convert to string
+    |> Stream.map(&List.to_string([&1]))
+
+    # Index the map
+    |> Stream.map(&all_a_to_z[&1])
+
+    # Sum results
+    |> Enum.sum
+
+    IO.inspect(total_sum_priorities)
+
+
+  end
+
 end
 
 RuckSack.run_part_one()
+RuckSack.run_part_two()
